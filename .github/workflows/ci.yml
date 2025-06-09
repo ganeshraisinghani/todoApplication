@@ -16,35 +16,43 @@ jobs:
         ports:
           - 27017:27017
 
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./backend
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Clean install backend deps
+      #######################
+      # 🔧 Backend Setup
+      #######################
+      - name: Clean install backend dependencies
+        working-directory: backend
         run: |
           rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install
 
-      - name: Ensure Jest is executable
+      - name: Ensure Jest is executable in backend
+        working-directory: backend
         run: chmod +x node_modules/.bin/jest
 
       - name: Run backend tests
+        working-directory: backend
         run: npm test
 
-      - name: Install frontend deps and test
+      #######################
+      # 🌐 Frontend Setup
+      #######################
+      - name: Clean install frontend dependencies
         working-directory: frontend
         run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
           npm install
-          npm test
 
-          
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm test
