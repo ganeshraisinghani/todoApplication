@@ -3,12 +3,15 @@ const request = require('supertest');
 const app = require('../app');
 
 beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/todo-test-db');
+  await mongoose.connect('mongodb://localhost:27017/todo-test-db', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 });
 
 afterAll(async () => {
-  await mongoose.connection.db.dropDatabase();
-  await mongoose.disconnect();
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
 });
 
 describe('Todo Routes Test', () => {

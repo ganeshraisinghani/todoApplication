@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 const Todo = require('../models/Todo');
 
 beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/testdb');
+  await mongoose.connect('mongodb://localhost:27017/testdb', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 });
 
 afterEach(async () => {
@@ -12,6 +15,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
+  await mongoose.connection.dropDatabase(); // Clean test database after all tests
   await mongoose.connection.close();
 });
 
