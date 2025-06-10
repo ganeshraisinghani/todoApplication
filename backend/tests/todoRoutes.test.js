@@ -1,14 +1,13 @@
+const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../app');
-const mongoose = require('mongoose');
-const Todo = require('../models/Todo');
 
 beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/test-todo', { useNewUrlParser: true, useUnifiedTopology: true });
+  await mongoose.connect('mongodb://localhost:27017/todo-test-db');
 });
 
 afterAll(async () => {
-  await mongoose.connection.dropDatabase();
+  await mongoose.connection.db.dropDatabase();
   await mongoose.disconnect();
 });
 
@@ -17,6 +16,7 @@ describe('Todo Routes Test', () => {
     const res = await request(app)
       .post('/api/todos')
       .send({ text: 'New Todo' });
+
     expect(res.status).toBe(201);
     expect(res.body.text).toBe('New Todo');
   });
