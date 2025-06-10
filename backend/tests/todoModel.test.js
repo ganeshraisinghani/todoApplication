@@ -27,3 +27,4 @@ describe('Todo Model Test', () => {
     expect(savedTodo.completed).toBe(false);
   });
 });
+
