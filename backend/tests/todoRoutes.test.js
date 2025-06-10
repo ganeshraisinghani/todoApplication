@@ -1,17 +1,15 @@
-const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../app');
+const mongoose = require('mongoose');
+const Todo = require('../models/Todo');
 
-beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/todo-test-db', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+afterEach(async () => {
+  await Todo.deleteMany(); // Clear test data after each test
 });
 
 afterAll(async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
+  await mongoose.connection.dropDatabase(); // Clean up test DB
+  await mongoose.connection.close();        // Close connection
 });
 
 describe('Todo Routes Test', () => {
@@ -25,8 +23,13 @@ describe('Todo Routes Test', () => {
   });
 
   it('should get all todos', async () => {
+    // Ensure there's at least one todo to fetch
+    await Todo.create({ text: 'Example Todo' });
+
     const res = await request(app).get('/api/todos');
+
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
     expect(res.body.length).toBeGreaterThan(0);
   });
 });

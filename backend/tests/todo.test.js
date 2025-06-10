@@ -3,20 +3,15 @@ const app = require('../app');
 const mongoose = require('mongoose');
 const Todo = require('../models/Todo');
 
-beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/testdb', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-});
+// No manual mongoose.connect here — app.js handles it
 
 afterEach(async () => {
-  await Todo.deleteMany();
+  await Todo.deleteMany(); // Clear test data after each test
 });
 
 afterAll(async () => {
-  await mongoose.connection.dropDatabase(); // Clean test database after all tests
-  await mongoose.connection.close();
+  await mongoose.connection.dropDatabase(); // Clean up test DB
+  await mongoose.connection.close(); // Close shared connection
 });
 
 test('GET /api/todos should return empty array', async () => {
